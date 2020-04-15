@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        body {
+            margin: 0;
+            background-color: bisque;
+        }
+
+        canvas {
+            display: block;
+            margin: 0 auto;
+            background-color: lightslategray;
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas width="600" height="600">
+    </canvas>
+
+    <script>
+
+        //resultado da serie de fibonacci
+        var result;
+
+        //define tela/pincel  ou canvas/context
+        var tela = document.querySelector("canvas");
+        var pincel = tela.getContext('2d');
+
+        //centraliza o ponto de partida no canvas
+        var xInicio = (document.querySelector('canvas').width / 2);
+        var yInicio = (document.querySelector('canvas').height / 2);
+
+        var quad = 1;//utilizada para definir quao quadrante do circulo será desenhado
+        var serie = [];//guarda a serie para ser desenhada
+        var raioAntigo = 0;//inicializa o raio com 0
+
+        //input do usuario(número)
+        var valorDeEntrada;
+
+
+        window.onload = start();
+
+        function start() {
+
+            valorDeEntrada = prompt("desenhar fibonacci até a posição...(entre com um número)");
+
+            fib(valorDeEntrada);
+            desenharNaTelaResultado();
+            desenharNaTelaResultadoTexto();
+        }
+
+        //itereção sobre o resultado captado do fib para desenhar os segmentos que o compoe
+        function desenharNaTelaResultado() {
+            serie.forEach(element => {
+                console.log(quad);
+
+
+                if (quad == 1) {
+                    desenhaCurva(xInicio, yInicio, element, quad);
+                    xInicio -= element - raioAntigo;
+
+                    raioAntigo = element;
+
+                } else if (quad == 2) {
+                    desenhaCurva(xInicio, yInicio, element, quad);
+                    yInicio -= element - raioAntigo;
+
+                    raioAntigo = element;
+
+
+
+                } else if (quad == 3) {
+                    desenhaCurva(xInicio, yInicio, element, quad);
+                    xInicio += element - raioAntigo;
+
+                    raioAntigo = element;
+
+
+                } else if (quad == 4) {
+                    desenhaCurva(xInicio, yInicio, element, quad);
+                    yInicio += element - raioAntigo;
+
+                    raioAntigo = element;
+
+
+
+                }
+
+            });
+
+        }
+
+
+        function desenharNaTelaResultadoTexto() {
+            pincel.font = "20px Georgia";
+            pincel.fillText(`Fib de   ${valorDeEntrada}   é :   ${serie}`, 10, 20);
+        }
+
+        //para limpar a tela -- testes/debug/development
+        function clear() {
+            pincel.fillStyle = "white";
+            pincel.fillRect(0, 0, tela.width, tela.height);
+        }
+
+
+        //dependendo do quadrante desenha um segmento de arco
+        function desenhaCurva(centrox, centroy, r, quadrante) {
+
+            pincel.beginPath();
+
+            if (quadrante == 1) {
+                //0, 0.5,  1.0 , 1.5 , 2.0
+                pincel.arc(centrox - (r - raioAntigo), centroy, r, 0 * Math.PI, 0.5 * Math.PI);
+                pincel.stroke();
+                quad++;
+            } else if (quadrante == 2) {
+                //0, 0.5,  1.0 , 1.5 , 2.0
+                pincel.arc(centrox, centroy - (r - raioAntigo), r, 0.5 * Math.PI, 1 * Math.PI);
+                pincel.stroke();
+                quad++;
+
+            } else if (quadrante == 3) {
+                //0, 0.5,  1.0 , 1.5 , 2.0
+                pincel.arc(centrox + (r - raioAntigo), centroy, r, 1 * Math.PI, 1.5 * Math.PI);
+                pincel.stroke();
+                quad++;
+
+            } else if (quadrante == 4) {
+                //0, 0.5,  1.0 , 1.5 , 2.0
+                pincel.arc(centrox, centroy + (r - raioAntigo), r, 1.5 * Math.PI, 2 * Math.PI);
+                pincel.stroke();
+                quad = 1;
+
+            }
+        }
+
+        //calcula a série de fibonacci
+        function fib(x) {
+            for (a = 0, b = 1, i = 0; i < x; b = a + b, a = b - a, i++) {
+                result = a;
+                serie.push(a)
+
+            }
+            //console.log(result);
+        }
+    </script>
+
+</body>
+
+</html>
